@@ -1,30 +1,30 @@
 package com.Alireza.Todolist.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
-@Table(name = "users")
-public class UserEntity {
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "tasks")
+public class TaskEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Setter
     @Column(nullable = false, length = 100)
-    @Setter
-    private String email;
-    @Setter
-    @Column(nullable = false)
-    private String passHash;
+    private String title;
     @Setter
     @Column(nullable = false, length = 254)
-    private String name;
-
+    private String description;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @Setter
+    private UserEntity user;
 }
