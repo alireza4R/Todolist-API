@@ -1,4 +1,6 @@
 package com.Alireza.Todolist.dto;
 
-public Record TaskResponse {
+public record TaskResponse (Long id,
+                            String title,
+                            String description) {
 }

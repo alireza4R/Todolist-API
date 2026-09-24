@@ -1,4 +1,11 @@
 package com.Alireza.Todolist.dto;
 
-public record ListResponse {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
+
+public record ListResponse(@JsonProperty("data") List<TaskResponse> listOfTasks,
+                           Long page,
+                           Long limitation,
+                           Long total) {
 }
