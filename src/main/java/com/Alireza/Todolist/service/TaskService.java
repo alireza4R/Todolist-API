@@ -38,8 +38,9 @@ public class TaskService {
 
 
     @Transactional
-    public TaskResponse updateTask (Long id, String title, String description, UserEntity user) throws Exception {
-        TaskEntity task = getTask(id, user);
+    public TaskResponse updateTask (Long id, String title, String description, Long userId) throws Exception {
+        UserEntity userEntity = getUserEntity(userId);
+        TaskEntity task = getTask(id, userId);
         task.setDescription(description);
         task.setTitle(title);
         TaskEntity savedTask = taskRepository.save(task);
@@ -65,9 +66,9 @@ public class TaskService {
         return new ListResponse(taskResponses, page, limit, (int)taskPage.getTotalElements());
     }
 
-    private TaskEntity getTask(Long id, UserEntity user) throws Exception {
+    private TaskEntity getTask(Long id, Long userId) throws Exception {
         TaskEntity task = taskRepository.findById(id).orElseThrow(()->new Exception("Task not found"));
-        if(!task.getUser().getId().equals(user.getId())){
+        if(!task.getUser().getId().equals(userId)){
             throw new AccessDeniedException("You cannot access this task");
         }
         return task;
