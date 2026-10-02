@@ -47,16 +47,16 @@ public class TaskService {
         return new TaskResponse(savedTask.getId(), savedTask.getTitle(), savedTask.getDescription());
     }
     @Transactional
-    public void deleteTask (Long id, UserEntity user) throws Exception {
-        TaskEntity task = getTask(id, user);
+    public void deleteTask (Long taskId, Long userId) throws Exception {
+        TaskEntity task = getTask(taskId, userId);
         taskRepository.delete(task);
     }
 
 
-    public ListResponse getAllTasks(int page, int limit, UserEntity user){
+    public ListResponse getAllTasks(int page, int limit, Long userId ){
         Pageable pageable = PageRequest.of(page -1,limit, Sort.by("id").ascending());
 
-        Page<TaskEntity> taskPage = taskRepository.findByUser_Id(user.getId(),pageable);
+        Page<TaskEntity> taskPage = taskRepository.findByUser_Id(userId, pageable);
         List<TaskEntity> taskEntities = taskPage.getContent();
         List<TaskResponse> taskResponses = new ArrayList<>();
 
