@@ -20,7 +20,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(path = "/register")
-    public AuthResponse register (@RequestBody RegisterRequest registerRequest) throws EmailAlreadyExistsException {
+    public AuthResponse register (@RequestBody RegisterRequest registerRequest){
         return new AuthResponse(authService.register(registerRequest.name(), registerRequest.email(), registerRequest.password()));
     }
 

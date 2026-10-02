@@ -4,6 +4,7 @@ import com.Alireza.Todolist.dto.ListResponse;
 import com.Alireza.Todolist.dto.TaskResponse;
 import com.Alireza.Todolist.entity.TaskEntity;
 import com.Alireza.Todolist.entity.UserEntity;
+import com.Alireza.Todolist.exception.TaskNotFoundException;
 import com.Alireza.Todolist.repository.TaskRepository;
 import com.Alireza.Todolist.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Pageable;
 
@@ -29,7 +31,7 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public TaskResponse createTask (String title, String description, Long userId) throws Exception {
+    public TaskResponse createTask (String title, String description, Long userId) {
         UserEntity user = getUserEntity(userId);
         TaskEntity task = new TaskEntity(null, title, description, user);
         task = taskRepository.save(task);
@@ -38,7 +40,7 @@ public class TaskService {
 
 
     @Transactional
-    public TaskResponse updateTask (Long id, String title, String description, Long userId) throws Exception {
+    public TaskResponse updateTask (Long id, String title, String description, Long userId)  {
         UserEntity userEntity = getUserEntity(userId);
         TaskEntity task = getTask(id, userId);
         task.setDescription(description);
@@ -47,7 +49,7 @@ public class TaskService {
         return new TaskResponse(savedTask.getId(), savedTask.getTitle(), savedTask.getDescription());
     }
     @Transactional
-    public void deleteTask (Long taskId, Long userId) throws Exception {
+    public void deleteTask (Long taskId, Long userId) {
         TaskEntity task = getTask(taskId, userId);
         taskRepository.delete(task);
     }
@@ -66,16 +68,16 @@ public class TaskService {
         return new ListResponse(taskResponses, page, limit, (int)taskPage.getTotalElements());
     }
 
-    private TaskEntity getTask(Long id, Long userId) throws Exception {
-        TaskEntity task = taskRepository.findById(id).orElseThrow(()->new Exception("Task not found"));
+    private TaskEntity getTask(Long id, Long userId)  {
+        TaskEntity task = taskRepository.findById(id).orElseThrow(()->new TaskNotFoundException("Task not found"));
         if(!task.getUser().getId().equals(userId)){
             throw new AccessDeniedException("You cannot access this task");
         }
         return task;
     }
 
-    private UserEntity getUserEntity(Long userId) throws Exception {
-        return userRepository.findById(userId).orElseThrow(()->new Exception("User not found"));
+    private UserEntity getUserEntity(Long userId)  {
+        return userRepository.findById(userId).orElseThrow(()->new UsernameNotFoundException("User not found"));
     }
 
 

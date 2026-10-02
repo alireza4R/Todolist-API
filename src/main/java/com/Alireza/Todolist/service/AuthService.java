@@ -39,7 +39,7 @@ public class AuthService {
 
     }
 
-    public String register(String name, String email, String password) throws EmailAlreadyExistsException {
+    public String register(String name, String email, String password) {
         if(userRepository.existsByEmail(email)){
             throw new EmailAlreadyExistsException("User exist");
         }
