@@ -6,6 +6,7 @@ import com.Alireza.Todolist.dto.PutRequest;
 import com.Alireza.Todolist.dto.TaskResponse;
 import com.Alireza.Todolist.service.TaskService;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -22,14 +23,14 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping(path = "/todos")
-    public TaskResponse createTask(@RequestBody PostRequest postRequest,
+    public TaskResponse createTask(@RequestBody @Valid PostRequest postRequest,
                                    @AuthenticationPrincipal Jwt jwt) {
         Long userId = Long.valueOf(jwt.getSubject());
         return taskService.createTask(postRequest.title(), postRequest.description(), userId);
     }
 
     @PutMapping("/todos/{id}")
-    public TaskResponse putTask(@RequestBody PutRequest putRequest,
+    public TaskResponse putTask(@RequestBody @Valid PutRequest putRequest,
                                 @AuthenticationPrincipal Jwt jwt,
                                 @PathVariable("id") Long taskId) {
         Long userId = Long.valueOf(jwt.getSubject());

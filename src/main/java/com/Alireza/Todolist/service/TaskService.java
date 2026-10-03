@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TaskService {
@@ -43,6 +44,8 @@ public class TaskService {
     public TaskResponse updateTask (Long id, String title, String description, Long userId)  {
         UserEntity userEntity = getUserEntity(userId);
         TaskEntity task = getTask(id, userId);
+        if(!Objects.equals(userEntity.getId(), task.getUser().getId()))
+            throw new AccessDeniedException("You are not allow to do that.");
         task.setDescription(description);
         task.setTitle(title);
         TaskEntity savedTask = taskRepository.save(task);
@@ -53,7 +56,6 @@ public class TaskService {
         TaskEntity task = getTask(taskId, userId);
         taskRepository.delete(task);
     }
-
 
     public ListResponse getAllTasks(int page, int limit, Long userId ){
         Pageable pageable = PageRequest.of(page -1,limit, Sort.by("id").ascending());

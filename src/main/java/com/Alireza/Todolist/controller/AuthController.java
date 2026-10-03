@@ -20,12 +20,12 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping(path = "/register")
-    public AuthResponse register (@RequestBody RegisterRequest registerRequest){
+    public AuthResponse register (@RequestBody @Valid RegisterRequest registerRequest){
         return new AuthResponse(authService.register(registerRequest.name(), registerRequest.email(), registerRequest.password()));
     }
 
     @PostMapping(path = "/login")
-    public AuthResponse login (@RequestBody LoginRequest loginRequest){
+    public AuthResponse login (@RequestBody @Valid LoginRequest loginRequest){
         return new AuthResponse(authService.login(loginRequest.email(), loginRequest.password()));
     }
 }
